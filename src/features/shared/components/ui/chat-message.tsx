@@ -4,6 +4,7 @@ import React, { useMemo, useState } from 'react';
 import { cva } from 'class-variance-authority';
 import { motion } from 'motion/react';
 import { Ban, ChevronRight, Code2, Loader2, Terminal } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import type { VariantProps } from 'class-variance-authority';
 
 import { cn } from '@/features/shared/utils/styles';
@@ -16,7 +17,7 @@ import { FilePreview } from '@/features/shared/components/ui/file-preview';
 import { MarkdownRenderer } from '@/features/shared/components/ui/markdown-renderer';
 
 const chatBubbleVariants = cva(
-  'group/message relative break-words rounded-lg p-3 text-sm sm:max-w-[70%]',
+  'group/message relative break-words rounded-lg p-3 text-sm leading-relaxed sm:max-w-[70%]',
   {
     variants: {
       isUser: {
@@ -144,7 +145,7 @@ export const ChatMessage: React.FC<ChatMessageProps> = ({
   content,
   createdAt,
   showTimeStamp = false,
-  animation = 'scale',
+  animation = 'none',
   actions,
   experimental_attachments,
   toolInvocations,
@@ -160,9 +161,11 @@ export const ChatMessage: React.FC<ChatMessageProps> = ({
     });
   }, [experimental_attachments]);
 
+  const { i18n } = useTranslation();
+
   const isUser = role === 'user';
 
-  const formattedTime = createdAt?.toLocaleTimeString('en-US', {
+  const formattedTime = createdAt?.toLocaleTimeString(i18n.language, {
     hour: '2-digit',
     minute: '2-digit',
   });
