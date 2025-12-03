@@ -1,5 +1,13 @@
 import { useTranslation } from 'react-i18next';
-import { ArrowDown, ArrowUp, ArrowUpDown, Info, Star } from 'lucide-react';
+import {
+  ArrowDown,
+  ArrowUp,
+  ArrowUpDown,
+  Info,
+  Star,
+  StarHalf,
+  StarOff,
+} from 'lucide-react';
 import { useSetWatchedTicker } from '../hooks/use-toggle-watched-instrument';
 import { InstrumentIconCircle } from './instrument-image-circle';
 import type {
@@ -8,7 +16,7 @@ import type {
   SortingState,
 } from '@tanstack/react-table';
 import type { Instrument } from '../types/instrument';
-import { cn, cssVar } from '@/features/shared/utils/styles';
+import { cn } from '@/features/shared/utils/styles';
 import { withCurrency } from '@/features/shared/utils/numbers';
 import { Button } from '@/features/shared/components/ui/button';
 import { DataTable } from '@/features/shared/components/ui/data-table';
@@ -77,59 +85,43 @@ export const InstrumentTable = ({
         </div>
       ),
       cell: ({ row }) => (
-        <div className="flex items-center gap-2">
-          <div className="group/heart hidden group-hover:flex items-center">
-            {row.original.is_watched && (
-              <>
-                <Star
-                  className="inline-flex group-hover/heart:hidden cursor-pointer"
-                  fill={cssVar('--foreground')}
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    setWatchedTicker({
-                      instrument_id: row.original.id,
-                      is_watched: !row.original.is_watched,
-                    });
-                  }}
-                />
-                <Star
-                  className="hidden group-hover/heart:inline-flex cursor-pointer"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    setWatchedTicker({
-                      instrument_id: row.original.id,
-                      is_watched: !row.original.is_watched,
-                    });
-                  }}
-                />
-              </>
-            )}
-            {!row.original.is_watched && (
-              <>
-                <Star
-                  className="inline-flex group-hover/heart:hidden cursor-pointer"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    setWatchedTicker({
-                      instrument_id: row.original.id,
-                      is_watched: true,
-                    });
-                  }}
-                />
-                <Star
-                  className="hidden group-hover/heart:inline-flex cursor-pointer"
-                  fill={cssVar('--foreground')}
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    setWatchedTicker({
-                      instrument_id: row.original.id,
-                      is_watched: true,
-                    });
-                  }}
-                />
-              </>
-            )}
-          </div>
+        <div className="flex items-center">
+          <button
+            type="button"
+            className="cursor-pointer"
+            onClick={(e) => {
+              e.stopPropagation();
+              setWatchedTicker({
+                instrument_id: row.original.id,
+                is_watched: !row.original.is_watched,
+              });
+            }}
+          >
+            <HybridTooltip disableHoverableContent>
+              <HybridTooltipTrigger asChild>
+                <div className="items-center justify-center group/heart">
+                  <div className="hidden group-hover:block size-6">
+                    <Star className="hidden group-hover:block group-hover/heart:hidden" />
+                    {row.original.is_watched ? (
+                      <StarOff className="hidden group-hover/heart:block" />
+                    ) : (
+                      <div className="relative hidden group-hover/heart:block">
+                        <Star className="absolute" />
+                        <StarHalf className="fill-foreground" />
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </HybridTooltipTrigger>
+              <HybridTooltipContent>
+                <p>
+                  {row.original.is_watched
+                    ? t('instruments.tooltips.remove_from_watchlist')
+                    : t('instruments.tooltips.add_to_watchlist')}
+                </p>
+              </HybridTooltipContent>
+            </HybridTooltip>
+          </button>
           <InstrumentIconCircle
             className="inline-flex group-hover:hidden"
             symbol={row.original.symbol}
@@ -137,7 +129,7 @@ export const InstrumentTable = ({
             icon={row.original.icon}
             size="sm"
           />
-          {row.original.symbol}
+          <div className="ml-2">{row.original.symbol}</div>
         </div>
       ),
       enableSorting: true,
