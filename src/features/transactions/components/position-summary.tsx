@@ -1,6 +1,7 @@
 import { useTranslation } from 'react-i18next';
 import { ChevronDown } from 'lucide-react';
 import { Link } from '@tanstack/react-router';
+import { formatPercentage } from '../utils/card-helpers';
 import { SummaryMetric, SummaryMetricSkeleton } from './summary-metric';
 import type { Position } from '@/client';
 import { InstrumentIconCircle } from '@/features/instruments/components/instrument-image-circle';
@@ -13,12 +14,14 @@ import { cn } from '@/features/shared/utils/styles';
 
 export function PositionSummary({
   position,
+  open,
   setCollapsed,
   isCollapsed,
   className,
   isNavigable = true,
 }: {
   position: Position;
+  open: boolean;
   setCollapsed: () => void;
   isCollapsed: boolean;
   isNavigable?: boolean;
@@ -36,11 +39,7 @@ export function PositionSummary({
   summaryItems.push(
     latestTransaction
       ? t('transactions.position.summary.last_transaction', {
-          action: t(
-            latestTransaction.is_buy
-              ? 'transactions.badge.buy'
-              : 'transactions.badge.sell'
-          ),
+          action: t('transactions.badge.buy'),
           date: dateToLocale(latestTransaction.timestamp, i18n.language),
         })
       : t('transactions.position.summary.no_transactions')
@@ -107,22 +106,26 @@ export function PositionSummary({
           />
           <SummaryMetric
             label={t('common.market_value')}
-            value={`${withCurrency(Number(position.market_value), i18n.language, 2)}`}
+            value={`${withCurrency(Number(position.value), i18n.language, 2)}`}
             containerClassName="min-w-0 border-b md:border-b-0 md:border-r"
           />
           <SummaryMetric
-            label={t('common.gain')}
+            label={
+              open
+                ? t('transactions.table.headers.unrealized_gain_loss')
+                : t('transactions.table.headers.realized_gain_loss')
+            }
             value={withCurrency(position.gain, i18n.language, 2)}
             valueClassName={getProfitabilityColor(position.gain)}
             containerClassName="min-w-0 border-r"
           />
           <SummaryMetric
-            label={t('common.gain_percentage')}
-            value={
-              position.gain_percentage === null
-                ? 'N/A'
-                : `${withCurrency(position.gain_percentage, i18n.language, 2)}%`
+            label={
+              open
+                ? t('transactions.table.headers.unrealized_pct')
+                : t('transactions.table.headers.realized_pct')
             }
+            value={formatPercentage(position.gain_percentage)}
             valueClassName={getProfitabilityColor(position.gain_percentage)}
             containerClassName="min-w-0"
           />

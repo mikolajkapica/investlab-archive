@@ -2,7 +2,7 @@ const enTransactions = {
   tabs: {
     open_positions: 'Open positions',
     closed_positions: 'Closed positions',
-    instrument_transaction_history: 'Instrument transaction history',
+    instrument_transaction_history: 'Open positions',
   },
   summary: {
     owned_assets: 'Owned volume',
@@ -14,10 +14,13 @@ const enTransactions = {
       transaction: 'Transaction',
       quantity: 'Quantity',
       share_price: 'Share Price',
-      acquisition_price: 'Acquisition Price',
+      current_value: 'Current Value',
       market_value: 'Market Value',
-      gain_loss: 'Gain / Loss',
-      gain_loss_pct: 'Gain / Loss %',
+      gain: 'Gain',
+      realized_gain_loss: 'Realized gain / loss',
+      realized_pct: 'Realized gain / loss %',
+      unrealized_gain_loss: 'Unrealized gain / loss',
+      unrealized_pct: 'Unrealized gain / loss %',
     },
   },
   badge: {
@@ -26,10 +29,13 @@ const enTransactions = {
   },
   cards: {
     sold_at: 'Sold @',
-    avg_buy_price: 'Avg Buy Price',
-    realized_gain_loss: 'Realized Gain / Loss',
-    realized_pct: 'Realized %',
-    current_price: 'Current Price',
+    gain_loss: 'Gain / Loss',
+    gain_loss_pct: 'Gain %',
+    price_at_buy: 'Price at Buy',
+    price_at_sell: 'Price at Sell',
+    current_share_price: 'Current Share Price',
+    sell_value: 'Sell Value',
+    current_value: 'Current Value',
   },
   actions: {
     instrument_details: 'Instrument details',
@@ -49,10 +55,11 @@ const enTransactions = {
   end_of_history: 'End of transaction history',
   tooltips: {
     name: 'Name of the financial instrument',
-    transaction: 'Date and type of transaction (buy or sell)',
+    transaction: 'Date and type of transaction',
     quantity: 'Number of shares held in the position',
     share_price: 'Price per share at the time of the transaction',
-    acquisition_price: 'Price of acquisition (quantity × share price + fees)',
+    gain: 'Total profit from the position (volume × (current price - purchase price))',
+    current_value: 'Total current value of the position',
     market_value: 'Total current value of the position',
     gain_loss:
       'For BUY: (current price - purchase price) × quantity. For SELL: (sell price - purchase price) × quantity',
