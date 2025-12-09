@@ -12,7 +12,7 @@ function RouteComponent() {
     <div className="prose prose-gray dark:prose-invert max-w-none">
       <h1>{t('legal.privacyPolicy.title')}</h1>
       <p>
-        {t('legal.privacyPolicy.lastUpdated', { date: new Date(2025, 8, 24) })}
+        {t('legal.privacyPolicy.lastUpdated', { date: new Date(2025, 11, 8) })}
       </p>
 
       <p>{t('legal.privacyPolicy.intro.description')}</p>
@@ -165,8 +165,12 @@ function RouteComponent() {
           {t(
             'legal.privacyPolicy.interpretationDefinitions.definitions.website.description'
           )}
-          <a href="https://investlab.app/" target="_blank" rel="noopener">
-            https://investlab.app/
+          <a
+            href="https://investlab.kapica.click/"
+            target="_blank"
+            rel="noopener"
+          >
+            https://investlab.kapica.click/
           </a>
           .
         </li>
