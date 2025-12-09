@@ -38,6 +38,7 @@ jobs:
           VITE_BACKEND_URL: ${{ secrets.VITE_BACKEND_URL }}
           VITE_PUBLIC_POSTHOG_KEY: ${{ secrets.VITE_PUBLIC_POSTHOG_KEY }}
           VITE_PUBLIC_POSTHOG_HOST: ${{ secrets.VITE_PUBLIC_POSTHOG_HOST }}
+          VITE_LANDING_IMGS_BASE_URL: ${{ secrets.VITE_LANDING_IMGS_BASE_URL }}
       - name: Zip dist directory
         run: |
           if [ -d "dist" ]; then
@@ -63,6 +64,7 @@ jobs:
           echo "VITE_BACKEND_URL=${{ secrets.VITE_BACKEND_URL }}" >> .env
           echo "VITE_PUBLIC_POSTHOG_KEY=${{ secrets.VITE_PUBLIC_POSTHOG_KEY }}" >> .env
           echo "VITE_PUBLIC_POSTHOG_HOST=${{ secrets.VITE_PUBLIC_POSTHOG_HOST }}" >> .env
+          echo "VITE_LANDING_IMGS_BASE_URL=${{ secrets.VITE_LANDING_IMGS_BASE_URL }}" >> .env
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
       - name: Set up Docker Buildx
