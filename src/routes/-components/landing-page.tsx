@@ -231,9 +231,12 @@ export function LandingPage() {
                       t('landing.features_overview.screenshot_placeholder')
                     ) : (
                       <img
-                        src={`${LANDING_IMGS_BASE_URL}/${i18n.language}/${appTheme}/${feature.image}.jpg`}
+                        src={`${LANDING_IMGS_BASE_URL}/${i18n.language}/${appTheme}/${feature.image}.png`}
                         alt={feature.title}
                         className="w-full h-full object-cover rounded-lg border border-foreground/10"
+                        onError={(event) => {
+                          event.currentTarget.src = `${LANDING_IMGS_BASE_URL}/en/light/${feature.image}.png`;
+                        }}
                       />
                     )}
                   </p>

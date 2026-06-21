@@ -19,7 +19,9 @@ if (!IS_DEMO_ARCHIVE && !POSTHOG_HOST) {
   throw new Error('VITE_PUBLIC_POSTHOG_HOST is not defined');
 }
 
-export const LANDING_IMGS_BASE_URL = import.meta.env.VITE_LANDING_IMGS_BASE_URL;
+export const LANDING_IMGS_BASE_URL =
+  import.meta.env.VITE_LANDING_IMGS_BASE_URL ||
+  (IS_DEMO_ARCHIVE ? '/landing' : undefined);
 if (!IS_DEMO_ARCHIVE && !LANDING_IMGS_BASE_URL) {
   throw new Error('VITE_LANDING_IMGS_BASE_URL is not defined');
 }

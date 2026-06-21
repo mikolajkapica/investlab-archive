@@ -1,4 +1,5 @@
 import { UserButton } from '@clerk/clerk-react';
+import { Link } from '@tanstack/react-router';
 import React from 'react';
 import { Skeleton } from './ui/skeleton';
 import { IS_DEMO_ARCHIVE } from '@/features/shared/utils/constants';
@@ -8,6 +9,12 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from '@/features/shared/components/ui/sidebar';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/features/shared/components/ui/dropdown-menu';
 
 export type UserLike = {
   firstName?: string | null;
@@ -34,6 +41,40 @@ export function NavUser({ user }: NavUserProps) {
     }
   };
 
+  if (IS_DEMO_ARCHIVE) {
+    return (
+      <SidebarMenu>
+        <SidebarMenuItem>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <SidebarMenuButton size="lg" className="cursor-pointer">
+                <div className="bg-primary text-primary-foreground flex h-8 w-8 items-center justify-center rounded-full text-xs font-semibold">
+                  {name.slice(0, 2).toUpperCase()}
+                </div>
+                <div className="flex flex-col">
+                  <span className="truncate font-medium">{name}</span>
+                  <span className="text-muted-foreground truncate text-xs">
+                    {email}
+                  </span>
+                </div>
+              </SidebarMenuButton>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="start" side="top">
+              <DropdownMenuItem asChild>
+                <Link search={{ landing: true }} to="/">
+                  Landing
+                </Link>
+              </DropdownMenuItem>
+              <DropdownMenuItem asChild>
+                <Link to="/logout">Logout</Link>
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </SidebarMenuItem>
+      </SidebarMenu>
+    );
+  }
+
   return (
     <SidebarMenu>
       <SidebarMenuItem>
@@ -43,14 +84,9 @@ export function NavUser({ user }: NavUserProps) {
           className="cursor-pointer"
         >
           <div ref={userButtonRef} className="my-auto">
-            {IS_DEMO_ARCHIVE ? (
-              <div className="bg-primary text-primary-foreground flex h-8 w-8 items-center justify-center rounded-full text-xs font-semibold">
-                {name.slice(0, 2).toUpperCase()}
-              </div>
-            ) : (
-              <UserButton
-                fallback={<UserButtonSkeleton />}
-                appearance={{
+            <UserButton
+              fallback={<UserButtonSkeleton />}
+              appearance={{
                 variables: {
                   colorBackground: 'var(--background)',
                   borderRadius: 'var(--radius)', // Apply consistent border radius
@@ -76,9 +112,8 @@ export function NavUser({ user }: NavUserProps) {
                     maxWidth: 'calc(100vw - 16px)', // Ensure popover fits within viewport
                   },
                 },
-                }}
-              />
-            )}
+              }}
+            />
           </div>
           <div className="flex flex-col">
             <span className="truncate font-medium">{name}</span>
