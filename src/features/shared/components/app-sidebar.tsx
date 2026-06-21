@@ -137,6 +137,15 @@ function AppSidebarContent({
         <div className={state === 'collapsed' ? 'hidden' : ''}>
           <Separator className="mb-2 bg-sidebar-border" />
           <div className="px-4 flex gap-4 whitespace-nowrap overflow-hidden">
+            {IS_DEMO_ARCHIVE && (
+              <Link
+                search={{ landing: true }}
+                to="/"
+                className="text-[10px] text-muted-foreground hover:text-foreground transition-colors"
+              >
+                Landing
+              </Link>
+            )}
             <Link
               to="/privacy-policy"
               target="_blank"

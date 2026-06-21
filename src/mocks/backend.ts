@@ -10,10 +10,10 @@ const prices: Record<string, number> = {
 };
 
 const instruments = [
-  { id: 'aapl', ticker: 'AAPL', name: 'Apple Inc.', market: 'stocks', currency_name: 'USD', market_cap: '3200000000000', type: 'CS', active: true, icon: null, logo: null },
-  { id: 'msft', ticker: 'MSFT', name: 'Microsoft Corporation', market: 'stocks', currency_name: 'USD', market_cap: '3800000000000', type: 'CS', active: true, icon: null, logo: null },
-  { id: 'nvda', ticker: 'NVDA', name: 'NVIDIA Corporation', market: 'stocks', currency_name: 'USD', market_cap: '3500000000000', type: 'CS', active: true, icon: null, logo: null },
-  { id: 'tsla', ticker: 'TSLA', name: 'Tesla, Inc.', market: 'stocks', currency_name: 'USD', market_cap: '1000000000000', type: 'CS', active: true, icon: null, logo: null },
+  { id: '11111111-1111-4111-8111-111111111111', ticker: 'AAPL', name: 'Apple Inc.', market: 'stocks', currency_name: 'USD', market_cap: '3200000000000', type: 'CS', active: true, icon: null, logo: null },
+  { id: '22222222-2222-4222-8222-222222222222', ticker: 'MSFT', name: 'Microsoft Corporation', market: 'stocks', currency_name: 'USD', market_cap: '3800000000000', type: 'CS', active: true, icon: null, logo: null },
+  { id: '33333333-3333-4333-8333-333333333333', ticker: 'NVDA', name: 'NVIDIA Corporation', market: 'stocks', currency_name: 'USD', market_cap: '3500000000000', type: 'CS', active: true, icon: null, logo: null },
+  { id: '44444444-4444-4444-8444-444444444444', ticker: 'TSLA', name: 'Tesla, Inc.', market: 'stocks', currency_name: 'USD', market_cap: '1000000000000', type: 'CS', active: true, icon: null, logo: null },
 ] as const;
 
 const daily = (ticker: string) => ({
@@ -49,7 +49,7 @@ const bars = (ticker: string) => Array.from({ length: 40 }, (_, i) => {
 });
 
 const investor = {
-  id: 'demo-investor',
+  id: '55555555-5555-4555-8555-555555555555',
   clerk_id: 'demo',
   balance: '18420.00',
   blocked_funds: '0.00',
@@ -73,6 +73,9 @@ const page = <T,>(results: ReadonlyArray<T>) => ({ count: results.length, next: 
 const readBody = async (request: Request) => {
   try { return await request.clone().json(); } catch { return {}; }
 };
+
+const chatReply = (content = '') =>
+  `Jasne — to jest demo archiwum, więc odpowiadam lokalnie bez backendu. Dla pytania „${content || 'demo'}”: portfel ma dodatni wynik, największe pozycje to Apple i NVIDIA, a dane są przykładowe.`;
 
 export function installMockBackend() {
   // ponytail: archive/demo mode, replace with MSW only if request assertions matter.
@@ -98,9 +101,9 @@ export function installMockBackend() {
 
       if (path === '/api/investors/me/' || path.startsWith('/api/investors/demo')) return json(investor);
       if (path === '/api/investors/deposit/') return json(await readBody(req));
-      if (path === '/api/investors/deposit-history/') return json(page([{ id: 'dep-1', amount: '10000.00', deposited_at: '2026-01-03T10:00:00Z' }]));
+      if (path === '/api/investors/deposit-history/') return json(page([{ id: '66666666-6666-4666-8666-666666666666', amount: '10000.00', deposited_at: '2026-01-03T10:00:00Z' }]));
       if (path === '/api/investors/me/account-value/') return json({ current_value: '23817.20', history: Array.from({ length: 30 }, (_, i) => ({ date: `2026-05-${String(i + 1).padStart(2, '0')}`, value: 21000 + i * 96 })) });
-      if (path === '/api/investors/me/notifications/') return json([{ id: 'n-1', type: 'price_alert', message_en: 'NVDA crossed your alert price.', message_pl: 'NVDA przekroczyła cenę alertu.', sent_at: now.toISOString(), created_at: now.toISOString(), updated_at: now.toISOString() }]);
+      if (path === '/api/investors/me/notifications/') return json([{ id: '77777777-7777-4777-8777-777777777777', type: 'price_alert', message_en: 'NVDA crossed your alert price.', message_pl: 'NVDA przekroczyła cenę alertu.', sent_at: now.toISOString(), created_at: now.toISOString(), updated_at: now.toISOString() }]);
       if (path === '/api/investors/me/watched-tickers/') return json(instruments.slice(0, 3).map(({ ticker, name, icon, logo }) => ({ ticker, name, icon, logo })));
       if (path.startsWith('/api/investors/me/watched-tickers/')) return json({ is_watched: true });
 
@@ -114,17 +117,25 @@ export function installMockBackend() {
 
       if (path === '/api/prices/') return json((url.searchParams.getAll('tickers').length ? url.searchParams.getAll('tickers') : Object.keys(prices)).map(daily));
       if (path === '/api/prices/bars/') return json(bars(url.searchParams.get('ticker') ?? 'AAPL'));
-      if (path === '/api/prices/price-alert/') return req.method === 'POST' ? json({ id: 'alert-1', ...(await readBody(req)), notification_config: { is_email: false, is_push: true, is_websocket: true } }, 201) : json(page([]));
-      if (path.startsWith('/api/prices/price-alert/')) return json({ id: 'alert-1', instrument_name: 'Apple Inc.', instrument_ticker: 'AAPL', threshold_type: 'above', threshold_value: '220', notification_config: { id: 'cfg-1', is_email: false, is_push: true, is_websocket: true, is_active: true, created_at: now.toISOString() } });
+      if (path === '/api/prices/price-alert/') return req.method === 'POST' ? json({ id: '88888888-8888-4888-8888-888888888888', ...(await readBody(req)), notification_config: { is_email: false, is_push: true, is_websocket: true } }, 201) : json(page([]));
+      if (path.startsWith('/api/prices/price-alert/')) return json({ id: '88888888-8888-4888-8888-888888888888', instrument_name: 'Apple Inc.', instrument_ticker: 'AAPL', threshold_type: 'above', threshold_value: '220', notification_config: { id: '99999999-9999-4999-8999-999999999999', is_email: false, is_push: true, is_websocket: true, is_active: true, created_at: now.toISOString() } });
       if (path.startsWith('/api/prices/')) return json(daily(path.split('/')[3] || 'AAPL'));
 
-      if (path === '/api/orders/' || path === '/api/orders/limit/' || path === '/api/orders/market/') return req.method === 'GET' ? json([]) : json({ id: 'order-1', ticker: 'AAPL', detail_type: 1, detail: { detail_type: path.includes('limit') ? 'limit' : 'market', volume: '1', volume_processed: '0', is_buy: true, limit_price: '210.00' } }, 201);
+      if (path === '/api/orders/' || path === '/api/orders/limit/' || path === '/api/orders/market/') return req.method === 'GET' ? json([]) : json({ id: 'aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa', ticker: 'AAPL', detail_type: 1, detail: { detail_type: path.includes('limit') ? 'limit' : 'market', volume: '1', volume_processed: '0', is_buy: true, limit_price: '210.00' } }, 201);
       if (path === '/api/markets/status/') return json({ market: 'open', server_time: now.toISOString(), exchanges: { nasdaq: 'open', nyse: 'open', otc: 'open' }, currencies: {}, indicesGroups: {}, early_hours: false, after_hours: false });
       if (path === '/api/markets/holidays/') return json([]);
       if (path === '/api/news/') return json([{ id: 'news-1', title: 'Demo portfolio beats the market', description: 'Static archive data keeps the app browsable without a backend.', article_url: 'https://example.com', published_utc: now.toISOString(), publisher: { name: 'InvestLab Archive' }, tickers: ['AAPL', 'NVDA'], insights: [] }]);
       if (path === '/api/notifications/vapid-public-key/') return json({ public_key: 'demo' });
-      if (path === '/api/chats/') return req.method === 'GET' ? json([]) : json({ id: 'chat-1', title: 'Archive chat', created_at: now.toISOString(), updated_at: now.toISOString(), message_count: 0 });
-      if (path.startsWith('/api/chats/')) return json({ id: 'chat-1', title: 'Archive chat', created_at: now.toISOString(), updated_at: now.toISOString(), messages: [] });
+      if (path === '/api/chats/') {
+        if (req.method === 'GET') return json([]);
+        const body = await readBody(req) as { first_message?: string; id?: string };
+        return json({ id: body.id ?? crypto.randomUUID(), title: body.first_message || 'Archive chat', created_at: now.toISOString(), updated_at: now.toISOString(), message_count: 2 }, 201);
+      }
+      if (path.includes('/messages/')) {
+        const body = await readBody(req) as { content?: string };
+        return json({ id: crypto.randomUUID(), role: 'assistant', content: chatReply(body.content), createdAt: now.toISOString() }, 201);
+      }
+      if (path.startsWith('/api/chats/')) return json({ id: path.split('/')[3] || crypto.randomUUID(), title: 'Archive chat', created_at: now.toISOString(), updated_at: now.toISOString(), messages: [{ id: crypto.randomUUID(), role: 'assistant', content: chatReply(), createdAt: now.toISOString() }] });
       if (path === '/api/graph_lang/') return req.method === 'GET' ? json(page([])) : json({ id: 'flow-1', name: 'Demo strategy', raw_graph_data: {}, active: false, repeat: false });
       if (path.includes('/api/graph_lang/')) return path.endsWith('/results/') ? json(page([])) : path.endsWith('/run/') ? json({ results: [] }) : json({ id: 'flow-1', name: 'Demo strategy', raw_graph_data: {}, active: false, repeat: false });
       if (path === '/api/status/') return json({ message: 'Mock backend running' });

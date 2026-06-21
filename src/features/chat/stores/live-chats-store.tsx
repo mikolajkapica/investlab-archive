@@ -1,6 +1,7 @@
 import { Store } from '@tanstack/react-store';
 import type { ChatMessage } from '@/client';
 import type { LlmMessage } from '@/features/shared/providers/types/llm';
+import { IS_DEMO_ARCHIVE } from '@/features/shared/utils/constants';
 
 export type LastChatMessageState =
   | 'idle'
@@ -93,16 +94,24 @@ export function createPendingMessage({
   content: string;
   isFirstMessage: boolean;
 }) {
+  const now = new Date().toISOString();
   liveChatsStore.setState((state) => {
     return {
       chats: new Map(state.chats).set(chatId, {
         request: {
-          id: 'user-pending-message',
+          id: crypto.randomUUID(),
           content,
           role: 'user',
-          createdAt: new Date().toISOString(),
+          createdAt: now,
         },
-        response: null,
+        response: IS_DEMO_ARCHIVE
+          ? {
+              id: crypto.randomUUID(),
+              role: 'assistant',
+              content: `Jasne — to jest lokalna odpowiedź archiwum. Dla pytania „${content}”: największe przykładowe pozycje to Apple i NVIDIA, portfel jest na plusie, a wszystkie dane są statyczne demo.`,
+              createdAt: now,
+            }
+          : null,
         state: isFirstMessage ? 'firstMessage' : 'sent',
       }),
     };

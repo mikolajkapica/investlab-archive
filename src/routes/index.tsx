@@ -2,6 +2,7 @@ import { createFileRoute } from '@tanstack/react-router';
 import { useEffect } from 'react';
 import { z } from 'zod';
 import { LandingPage } from '@/routes/-components/landing-page';
+import { IS_DEMO_ARCHIVE } from '@/features/shared/utils/constants';
 import { Dashboard } from '@/routes/-components/dashboard';
 import { DashboardPending } from '@/routes/-components/dashboard-pending';
 import { syncLanguage } from '@/features/shared/queries/update-language';
@@ -16,6 +17,7 @@ import {
 export const Route = createFileRoute('/')({
   validateSearch: z.object({
     initial_session: z.boolean().optional(),
+    landing: z.boolean().optional(),
   }),
   loader: async ({ context: { i18n, auth, queryClient } }) => {
     if (auth.isSignedIn) {
@@ -47,12 +49,16 @@ export const Route = createFileRoute('/')({
 function RouteComponent() {
   const { auth, isLoggedInBefore } = Route.useRouteContext();
 
-  const { initial_session } = Route.useSearch();
+  const { initial_session, landing } = Route.useSearch();
 
   useEffect(() => {
     if (!initial_session) return;
     void syncLanguage();
   }, [initial_session]);
+
+  if (IS_DEMO_ARCHIVE && landing) {
+    return <LandingPage />;
+  }
 
   if (!auth.isLoaded && isLoggedInBefore) {
     return <Dashboard />;
