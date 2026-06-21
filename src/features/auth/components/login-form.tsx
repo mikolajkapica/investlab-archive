@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { ResultAsync, err, ok } from 'neverthrow';
 import { z } from 'zod';
 import { ErrorAlert } from './error-alert';
+import { DEMO_AUTH_KEY } from '@/main';
 import { useAppForm } from '@/features/shared/hooks/use-app-form';
 import { ContinueWithGoogle } from '@/features/auth/components/continue-with-google';
 import {
@@ -14,12 +15,49 @@ import {
   CardTitle,
 } from '@/features/shared/components/ui/card';
 import { Divider } from '@/features/shared/components/ui/divider';
+import { Button } from '@/features/shared/components/ui/button';
+import { IS_DEMO_ARCHIVE } from '@/features/shared/utils/constants';
 
 interface LoginFormProps {
   pageError?: string;
 }
 
+function DemoLoginForm() {
+  const navigate = useNavigate();
+  const { t } = useTranslation();
+
+  const login = async () => {
+    localStorage.setItem(DEMO_AUTH_KEY, 'true');
+    document.cookie = `${DEMO_AUTH_KEY}=true; Max-Age=2592000; path=/; SameSite=Lax`;
+    await navigate({ to: '/' });
+    window.location.reload();
+  };
+
+  return (
+    <Card>
+      <CardHeader className="flex flex-col items-center">
+        <CardTitle>{t('auth.welcome_back')}</CardTitle>
+        <CardDescription>Archive demo — no real account needed.</CardDescription>
+      </CardHeader>
+      <CardContent className="flex flex-col gap-4">
+        <Button onClick={login}>Fake login as Demo Investor</Button>
+        <Link to="/" className="text-center text-sm underline underline-offset-4">
+          Back to landing
+        </Link>
+      </CardContent>
+    </Card>
+  );
+}
+
 export function LoginForm({ pageError }: LoginFormProps) {
+  return IS_DEMO_ARCHIVE ? (
+    <DemoLoginForm />
+  ) : (
+    <RealLoginForm pageError={pageError} />
+  );
+}
+
+function RealLoginForm({ pageError }: LoginFormProps) {
   const { isLoaded, signIn, setActive } = useSignIn();
   const { t } = useTranslation();
   const navigate = useNavigate();

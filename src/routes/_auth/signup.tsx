@@ -1,6 +1,8 @@
 import { createFileRoute } from '@tanstack/react-router';
 import { z } from 'zod';
+import { LoginForm } from '@/features/auth/components/login-form';
 import { SignUpForm } from '@/features/auth/components/signup-form';
+import { IS_DEMO_ARCHIVE } from '@/features/shared/utils/constants';
 import { AcceptTermsPrivacy } from '@/features/auth/components/accept-terms-privacy';
 
 export const Route = createFileRoute('/_auth/signup')({
@@ -14,7 +16,7 @@ function RouteComponent() {
   const { error } = Route.useSearch();
   return (
     <>
-      <SignUpForm pageError={error} />
+      {IS_DEMO_ARCHIVE ? <LoginForm /> : <SignUpForm pageError={error} />}
       <AcceptTermsPrivacy />
     </>
   );

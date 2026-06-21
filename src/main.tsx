@@ -93,11 +93,23 @@ export const router = createRouter({
   defaultPendingComponent: () => <RouterLoading />,
 });
 
-const demoAuth = {
-  isLoaded: true,
-  isSignedIn: true,
-  signOut: () => Promise.resolve(),
-} as ReturnType<typeof useAuth>;
+export const DEMO_AUTH_KEY = 'investlab_demo_auth';
+
+const isDemoSignedIn = () =>
+  localStorage.getItem(DEMO_AUTH_KEY) === 'true' ||
+  document.cookie.includes(`${DEMO_AUTH_KEY}=true`);
+
+const demoAuth = () =>
+  ({
+    isLoaded: true,
+    isSignedIn: isDemoSignedIn(),
+    signOut: () => {
+      localStorage.removeItem(DEMO_AUTH_KEY);
+      document.cookie = `${DEMO_AUTH_KEY}=; Max-Age=0; path=/`;
+      window.location.href = '/';
+      return Promise.resolve();
+    },
+  }) as ReturnType<typeof useAuth>;
 
 const demoWs = {
   ws: { lastJsonMessage: null, sendJsonMessage: () => undefined },
@@ -108,10 +120,17 @@ const demoWs = {
 function DemoApp() {
   const i18n = useTranslation();
 
+  const auth = demoAuth();
+
   return (
     <WSContext value={demoWs}>
       <RouterProvider
-        context={{ queryClient, auth: demoAuth, isLoggedInBefore: true, i18n }}
+        context={{
+          queryClient,
+          auth,
+          isLoggedInBefore: Boolean(auth.isSignedIn),
+          i18n,
+        }}
         router={router}
       />
     </WSContext>
