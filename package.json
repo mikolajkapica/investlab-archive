@@ -2,10 +2,16 @@
   "name": "investlab",
   "private": true,
   "type": "module",
+  "packageManager": "pnpm@11.8.0",
+  "engines": {
+    "node": ">=22.12.0"
+  },
   "scripts": {
     "build": "vite build && tsc",
+    "build:archive": "VITE_DEMO_ARCHIVE=true vite build && tsc",
     "serve": "vite preview",
     "dev": "vite --port 3000",
+    "dev:archive": "VITE_DEMO_ARCHIVE=true vite --port 3000",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "lint": "eslint .",

@@ -1,8 +1,9 @@
 import { Outlet, createFileRoute, redirect } from '@tanstack/react-router';
+import { IS_DEMO_ARCHIVE } from '@/features/shared/utils/constants';
 
 export const Route = createFileRoute('/_authed')({
   beforeLoad: ({ context: { isLoggedInBefore } }) => {
-    if (!isLoggedInBefore) {
+    if (!IS_DEMO_ARCHIVE && !isLoggedInBefore) {
       throw redirect({ to: '/' });
     }
   },
@@ -16,7 +17,7 @@ function RouteComponent() {
     return <Outlet />;
   }
 
-  if (!auth.isSignedIn) {
+  if (!IS_DEMO_ARCHIVE && !auth.isSignedIn) {
     throw redirect({ to: '/' });
   }
 

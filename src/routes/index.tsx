@@ -1,4 +1,3 @@
-import { SignedIn, SignedOut } from '@clerk/clerk-react';
 import { createFileRoute } from '@tanstack/react-router';
 import { useEffect } from 'react';
 import { z } from 'zod';
@@ -59,14 +58,5 @@ function RouteComponent() {
     return <Dashboard />;
   }
 
-  return (
-    <>
-      <SignedOut>
-        <LandingPage />
-      </SignedOut>
-      <SignedIn>
-        <Dashboard />
-      </SignedIn>
-    </>
-  );
+  return auth.isSignedIn ? <Dashboard /> : <LandingPage />;
 }

@@ -1,7 +1,7 @@
 import { UserButton } from '@clerk/clerk-react';
 import React from 'react';
 import { Skeleton } from './ui/skeleton';
-import type { useUser } from '@clerk/clerk-react';
+import { IS_DEMO_ARCHIVE } from '@/features/shared/utils/constants';
 import {
   SidebarMenu,
   SidebarMenuButton,
@@ -9,8 +9,14 @@ import {
   useSidebar,
 } from '@/features/shared/components/ui/sidebar';
 
+export type UserLike = {
+  firstName?: string | null;
+  fullName?: string | null;
+  primaryEmailAddress?: { emailAddress?: string | null } | null;
+};
+
 interface NavUserProps {
-  user: NonNullable<ReturnType<typeof useUser>['user']>;
+  user: UserLike;
 }
 
 export function NavUser({ user }: NavUserProps) {
@@ -37,9 +43,14 @@ export function NavUser({ user }: NavUserProps) {
           className="cursor-pointer"
         >
           <div ref={userButtonRef} className="my-auto">
-            <UserButton
-              fallback={<UserButtonSkeleton />}
-              appearance={{
+            {IS_DEMO_ARCHIVE ? (
+              <div className="bg-primary text-primary-foreground flex h-8 w-8 items-center justify-center rounded-full text-xs font-semibold">
+                {name.slice(0, 2).toUpperCase()}
+              </div>
+            ) : (
+              <UserButton
+                fallback={<UserButtonSkeleton />}
+                appearance={{
                 variables: {
                   colorBackground: 'var(--background)',
                   borderRadius: 'var(--radius)', // Apply consistent border radius
@@ -65,8 +76,9 @@ export function NavUser({ user }: NavUserProps) {
                     maxWidth: 'calc(100vw - 16px)', // Ensure popover fits within viewport
                   },
                 },
-              }}
-            />
+                }}
+              />
+            )}
           </div>
           <div className="flex flex-col">
             <span className="truncate font-medium">{name}</span>

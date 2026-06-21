@@ -1,13 +1,30 @@
-# InvestLab Web
+# InvestLab Archive
 
-[![Test](https://github.com/investlab-app/web/actions/workflows/test.yml/badge.svg)](https://github.com/investlab-app/web/actions/workflows/test.yml)
-[![Dependency Analysis](https://github.com/investlab-app/web/actions/workflows/dependency-check.yml/badge.svg)](https://github.com/investlab-app/web/actions/workflows/dependency-check.yml)
+Static archive/demo of InvestLab, a beginner-friendly paper-trading platform.
 
-InvestLab is a beginner-friendly paper-trading platform.
+## Archive mode
+
+Runs without the backend, Clerk, PostHog, or WebSockets.
+
+```bash
+pnpm install
+pnpm dev:archive
+pnpm build:archive
+```
+
+## Cloudflare Pages
+
+Use these settings:
+
+- Build command: `pnpm build:archive`
+- Build output directory: `dist`
+- Node version: `22.12.0`
+
+`wrangler.toml`, `.node-version`, and `public/_redirects` are included so SPA routes and archive env work.
 
 # Getting Started
 
-To run this application:
+For normal development with real services:
 
 ```bash
 pnpm install

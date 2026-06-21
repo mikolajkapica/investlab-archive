@@ -22,6 +22,7 @@ import {
 import { Separator } from './ui/separator';
 import { WalletSection } from './wallet-section';
 import type { NavItem } from '@/features/shared/components/nav-main';
+import type { UserLike } from '@/features/shared/components/nav-user';
 import { NavMain } from '@/features/shared/components/nav-main';
 import {
   NavUser,
@@ -29,10 +30,29 @@ import {
 } from '@/features/shared/components/nav-user';
 import { NavWatchedTickers } from '@/features/shared/components/nav-watched-tickers';
 import { InvestLabLogo } from '@/features/shared/components/investlab-logo';
+import { IS_DEMO_ARCHIVE } from '@/features/shared/utils/constants';
+
+const demoUser = {
+  firstName: 'Demo',
+  fullName: 'Demo Investor',
+  primaryEmailAddress: { emailAddress: 'demo@investlab.archive' },
+};
 
 export function AppSidebar(props: React.ComponentProps<typeof Sidebar>) {
-  const { t } = useTranslation();
+  if (IS_DEMO_ARCHIVE) return <AppSidebarContent {...props} user={demoUser} />;
+  return <AuthedAppSidebar {...props} />;
+}
+
+function AuthedAppSidebar(props: React.ComponentProps<typeof Sidebar>) {
   const { user } = useUser();
+  return <AppSidebarContent {...props} user={user} />;
+}
+
+function AppSidebarContent({
+  user,
+  ...props
+}: React.ComponentProps<typeof Sidebar> & { user: UserLike | null | undefined }) {
+  const { t } = useTranslation();
 
   const { state } = useSidebar();
 

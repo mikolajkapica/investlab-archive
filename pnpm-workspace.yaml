@@ -1,0 +1,9 @@
+overrides:
+  devalue: ^5.3.2
+  vite@>=7.1.0 <=7.1.4: '>=7.1.5'
+allowBuilds:
+  '@clerk/shared': true
+  '@tailwindcss/oxide': true
+  core-js: true
+  esbuild: true
+  unrs-resolver: true

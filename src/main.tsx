@@ -13,10 +13,14 @@ import { PostHogProvider } from 'posthog-js/react';
 import { useAuth, useClerk } from '@clerk/clerk-react';
 import { useTranslation } from 'react-i18next';
 import { routeTree } from './routeTree.gen';
-import { WSProvider } from './features/shared/providers/ws-provider.tsx';
+import {
+  WSContext,
+  WSProvider,
+} from './features/shared/providers/ws-provider.tsx';
 import { Conditional } from './features/shared/components/conditional.tsx';
 import {
   CLERK_PUBLIC_KEY,
+  IS_DEMO_ARCHIVE,
   IS_PROD,
   POSTHOG_HOST,
   POSTHOG_KEY,
@@ -28,11 +32,17 @@ import { useOnlineStatus } from './features/shared/hooks/use-online-status.tsx';
 import { InAppNotificationsProvider } from './features/shared/providers/in-app-notifications-provider.tsx';
 import { HybridTooltipProvider } from './features/shared/components/ui/hybrid-tooltip.tsx';
 import { BreadcrumbProvider } from './features/shared/components/breadcrumb-nav.tsx';
+import { installMockBackend } from './mocks/backend.ts';
+import type { ContextType } from 'react';
 import { ThemeProvider } from '@/features/shared/components/theme-provider.tsx';
 import { ClerkThemedProvider } from '@/features/shared/providers/clerk-themed-provider.tsx';
 import './i18n/config.ts';
 import './styles.css';
 import '@fontsource-variable/spline-sans';
+
+if (IS_DEMO_ARCHIVE) {
+  installMockBackend();
+}
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -83,6 +93,31 @@ export const router = createRouter({
   defaultPendingComponent: () => <RouterLoading />,
 });
 
+const demoAuth = {
+  isLoaded: true,
+  isSignedIn: true,
+  signOut: () => Promise.resolve(),
+} as ReturnType<typeof useAuth>;
+
+const demoWs = {
+  ws: { lastJsonMessage: null, sendJsonMessage: () => undefined },
+  updateHandler: () => undefined,
+  removeHandler: () => undefined,
+} as unknown as NonNullable<ContextType<typeof WSContext>>;
+
+function DemoApp() {
+  const i18n = useTranslation();
+
+  return (
+    <WSContext value={demoWs}>
+      <RouterProvider
+        context={{ queryClient, auth: demoAuth, isLoggedInBefore: true, i18n }}
+        router={router}
+      />
+    </WSContext>
+  );
+}
+
 function App() {
   const isOnline = useOnlineStatus();
   const i18n = useTranslation();
@@ -131,11 +166,23 @@ if (rootElement && !rootElement.innerHTML) {
         <HybridTooltipProvider>
           <ToasterProvider>
             <BreadcrumbProvider>
-              <ClerkThemedProvider publicKey={CLERK_PUBLIC_KEY}>
-                <Conditional
-                  condition={IS_PROD}
-                  component={PostHogProvider}
-                  props={{
+              {IS_DEMO_ARCHIVE ? (
+                <PersistQueryClientProvider
+                  client={queryClient}
+                  persistOptions={{
+                    persister: createAsyncStoragePersister({
+                      storage: window.localStorage,
+                    }),
+                  }}
+                >
+                  <DemoApp />
+                </PersistQueryClientProvider>
+              ) : (
+                <ClerkThemedProvider publicKey={CLERK_PUBLIC_KEY}>
+                  <Conditional
+                    condition={IS_PROD}
+                    component={PostHogProvider}
+                    props={{
                     apiKey: POSTHOG_KEY,
                     options: {
                       api_host: POSTHOG_HOST,
@@ -184,8 +231,9 @@ if (rootElement && !rootElement.innerHTML) {
                   >
                     <App />
                   </PersistQueryClientProvider>
-                </Conditional>
-              </ClerkThemedProvider>
+                  </Conditional>
+                </ClerkThemedProvider>
+              )}
             </BreadcrumbProvider>
           </ToasterProvider>
         </HybridTooltipProvider>
